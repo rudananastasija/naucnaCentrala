@@ -85,6 +85,7 @@ public class RegisterController {
 					
 				}
 			}
+			
 		}
 		try {
 
@@ -201,8 +202,6 @@ public class RegisterController {
     public @ResponseBody FormFieldsDto getFormaCasopis() {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("procesCasopisID");
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).list().get(0);
-		//task.setAssignee("urednik");
-		//taskService.saveTask(task);
 		TaskFormData tfd = formService.getTaskFormData(task.getId());
 		List<FormField> properties = tfd.getFormFields();
 		System.out.println("usao u fu za formu casopis");
@@ -223,8 +222,6 @@ public class RegisterController {
 		}
 		Task activeTask = taskService.createTaskQuery().processInstanceId(processInstanceId).list().get(0);
 		
-		//activeTask.setAssignee("urednik");
-		//taskService.saveTask(activeTask);
 		
 		TaskFormData tfd = formService.getTaskFormData(tasks.get(0).getId());
 		List<FormField> properties = tfd.getFormFields();
@@ -245,6 +242,15 @@ public class RegisterController {
 			System.out.println(" usao u petlju ");
 			if(dto.get(i).getFieldId().equals("recenzenti")) {
 				if(dto.get(i).getRecenzenti().size() <=1) {
+					System.out.println("nedoovljan broj recenzenata");
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+					
+				}
+			}
+			
+			if(dto.get(i).getFieldId().equals("urednici")) {
+				if(dto.get(i).getRecenzenti().size() >2) {
+					System.out.println("broj urednika ne valja");
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 					
 				}

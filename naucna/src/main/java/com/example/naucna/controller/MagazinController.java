@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.naucna.model.FormFieldsDto;
 import com.example.naucna.model.FormSubmissionDto;
+import com.example.naucna.model.Magazin;
 import com.example.naucna.model.User;
 import com.example.naucna.services.MagazinServiceImp;
 import com.example.naucna.services.UserServiceImp;
@@ -94,6 +95,13 @@ public class MagazinController {
 						System.out.println("prazan issn");
 						
 						return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+					}else {
+						Magazin magazinCheck = service.findOneByIssn(Long.parseLong(dto.get(i).getFieldValue()));
+						
+						if(magazinCheck != null) {
+							return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+							
+						}
 					}
 				}
 				
