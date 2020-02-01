@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -55,6 +56,8 @@ public class Magazin {
 	  )
 	private Set<User> recenzenti = new HashSet<User>();
 
+	@ManyToOne( fetch = FetchType.EAGER)	
+	private User glavniUrednik;
 	public Magazin() {
 		super();
 	}

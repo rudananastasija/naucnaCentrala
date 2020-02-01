@@ -8,13 +8,41 @@
     <bpmn:userTask id="taskKorisnickaForma" name="Korisnicka forma" camunda:assignee="${pokretac}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="ime" label="ime" type="string" />
-          <camunda:formField id="prezime" label="prezime" type="string" />
-          <camunda:formField id="grad" label="grad" type="string" />
-          <camunda:formField id="drzava" label="drzava" type="string" />
-          <camunda:formField id="email" label="email" type="string" />
-          <camunda:formField id="korisnickoIme" label="Korisnicko ime" type="string" />
-          <camunda:formField id="lozinka" label="Lozinka" type="string" />
+          <camunda:formField id="ime" label="ime" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="prezime" label="prezime" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="grad" label="grad" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="drzava" label="drzava" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="email" label="email" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="korisnickoIme" label="Korisnicko ime" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="lozinka" label="Lozinka" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
           <camunda:formField id="recenzent" label="recenzent?" type="boolean" />
           <camunda:formField id="titula" label="Titula" type="string" />
           <camunda:formField id="oblasti" label="naucne oblasti" type="enum" />
@@ -98,7 +126,7 @@
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT45M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
-    <bpmn:userTask id="Task_0wsgnbd" name="Aktivacija naloga">
+    <bpmn:userTask id="Task_0wsgnbd" name="Aktivacija naloga" camunda:assignee="${pokretac}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="aktivacija" label="Aktiviraj nalog :" type="boolean" />
@@ -127,15 +155,13 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="RegistracijaId">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="Registracija">
-        <dc:Bounds x="162" y="295" width="36" height="36" />
+        <dc:Bounds x="162" y="285" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="152" y="338" width="58" height="14" />
+          <dc:Bounds x="152" y="328" width="58" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_08l7a1m_di" bpmnElement="SequenceFlow_08l7a1m">
-        <di:waypoint x="198" y="313" />
-        <di:waypoint x="254" y="313" />
-        <di:waypoint x="254" y="303" />
+        <di:waypoint x="198" y="303" />
         <di:waypoint x="310" y="303" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_0k4h05h_di" bpmnElement="taskKorisnickaForma">

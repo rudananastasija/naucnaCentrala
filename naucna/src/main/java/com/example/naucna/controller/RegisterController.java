@@ -10,6 +10,7 @@ import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.form.FormField;
+import org.camunda.bpm.engine.form.FormFieldValidationConstraint;
 import org.camunda.bpm.engine.form.TaskFormData;
 import org.camunda.bpm.engine.impl.form.validator.FormFieldValidationException;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
@@ -30,7 +31,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.naucna.model.FormFieldsDto;
 import com.example.naucna.model.FormSubmissionDto;
+import com.example.naucna.model.OgranicenjeDto;
 import com.example.naucna.model.TaskDto;
+import com.example.naucna.model.User;
+import com.example.naucna.services.UserService;
 import com.sun.research.ws.wadl.HTTPMethods;
 
 
@@ -49,6 +53,9 @@ public class RegisterController {
 	private RepositoryService repositoryService;
 	
 	@Autowired
+	private UserService userService;
+	
+	@Autowired
 	TaskService taskService;
 	
 	@Autowired
@@ -62,30 +69,73 @@ public class RegisterController {
 		taskService.saveTask(task);
 		TaskFormData tfd = formService.getTaskFormData(task.getId());
 		List<FormField> properties = tfd.getFormFields();
+		List<FormFieldValidationConstraint> constraints = new ArrayList<FormFieldValidationConstraint>();
+		List<OgranicenjeDto> ogranicenja = new ArrayList<OgranicenjeDto>();
 		
-		
-		return new FormFieldsDto(task.getId(), pi.getId(), properties);
+		for(FormField ff : properties) {
+			OgranicenjeDto ogranicenje = new OgranicenjeDto(ff.getId(),false);
+			for(int i = 0;i<ff.getValidationConstraints().size();i++) {
+				System.out.println("u petlji");
+				ogranicenje.setRequired(true);
+				constraints.add(ff.getValidationConstraints().get(i));
+			}
+			
+			ogranicenja.add(ogranicenje);		}
+		return new FormFieldsDto(task.getId(), properties, pi.getId(),constraints,ogranicenja);
     }
 	
 	@PostMapping(path = "/potvrdiUsera/{taskId}", produces = "application/json"	)
     public @ResponseBody ResponseEntity potvrdiUsera(@RequestBody List<FormSubmissionDto> dto, @PathVariable String taskId) {
 		System.out.println("U potvrdiUser je");
+		List<FormSubmissionDto> returnValue = new ArrayList<FormSubmissionDto>();
 		HashMap<String, Object> map = this.mapListToDto(dto);
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String processInstanceId = task.getProcessInstanceId();
+
 		for(int i = 0;i<dto.size();i++) {
 			if(!dto.get(i).getFieldId().equals("titula") && !dto.get(i).getFieldId().equals("recenzent")&&!dto.get(i).getFieldId().equals("oblasti")) {
 				if(dto.get(i).getFieldValue()  == null || dto.get(i).getFieldValue().isEmpty()) {
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 				}
 			}
-			if(dto.get(i).getFieldId().equals("oblasti")) {
-				if(dto.get(i).getOblasti().size() == 0) {
-					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			
+			User korisnik = null;
+			
+			if(dto.get(i).getFieldId().equals("email")) {
+				korisnik = userService.findUserByEmail(dto.get(i).getFieldValue());
+				if(korisnik != null) {
+					returnValue.add(new FormSubmissionDto("email", "Email nije jedinstven"));
+				}else {
+					returnValue.add(new FormSubmissionDto("email", "ok"));
 					
 				}
 			}
 			
+			if(dto.get(i).getFieldId().equals("korisnickoIme")) {
+				korisnik = userService.findUserByUsername(dto.get(i).getFieldValue());
+				if(korisnik != null) {
+					returnValue.add(new FormSubmissionDto("username", "Korisnicko ime nije jedinstveno"));
+				}else {
+					returnValue.add(new FormSubmissionDto("username", "ok"));
+					
+				}
+				
+			}
+			
+			if(dto.get(i).getFieldId().equals("oblasti")) {
+				if(dto.get(i).getOblasti().size() == 0) {
+					returnValue.add(new FormSubmissionDto("oblasti", "morate izabrati najmanje jednu oblast!"));
+					return new ResponseEntity<List<FormSubmissionDto>>(returnValue, HttpStatus.OK);
+						  
+				}else {
+					returnValue.add(new FormSubmissionDto("oblasti", "ok"));
+					
+				}
+			}
+			if(korisnik != null) {
+			     return new ResponseEntity<List<FormSubmissionDto>>(returnValue, HttpStatus.OK);
+			       
+			}
 		}
 		try {
 
@@ -95,7 +145,7 @@ public class RegisterController {
 			for(Task t : taskList) {
 				System.out.println(" task "+t.getAssignee()+" ii " +t.getId());
 			}
-	        return new ResponseEntity<>(HttpStatus.OK);
+	        return new ResponseEntity<>(returnValue,HttpStatus.OK);
 			
 		}catch(FormFieldValidationException e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -35,9 +35,10 @@ public class CuvanjePotvrdeService implements JavaDelegate{
 			
 				   if(potvrdaFlag) {
 				    	  korisnik.setUloga("REC");
-				      }else {
+				    	  korisnik.setRecenzent(true);
+				   }else {
 				    	  korisnik.setUloga("KORISNIK");
-					        
+				    	  korisnik.setRecenzent(false);
 				      }
 				   userService.saveUser(korisnik);
 					

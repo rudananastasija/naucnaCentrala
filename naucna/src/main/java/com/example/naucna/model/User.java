@@ -70,6 +70,10 @@ public class User {
 
 	@ManyToMany(mappedBy = "recenzenti")
 	private Set<Magazin> magaziniRecenzent = new HashSet<Magazin>();
+	
+	@OneToMany(mappedBy = "glavniUrednik", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Set<Magazin> magaziniGlavniUrednik = new HashSet<Magazin>();
 
 
 	public User() {
@@ -228,6 +232,15 @@ public class User {
 	public void setMagaziniRecenzent(Set<Magazin> magaziniRecenzent) {
 		this.magaziniRecenzent = magaziniRecenzent;
 	}
+
+	public Set<Magazin> getMagaziniGlavniUrednik() {
+		return magaziniGlavniUrednik;
+	}
+
+	public void setMagaziniGlavniUrednik(Set<Magazin> magaziniGlavniUrednik) {
+		this.magaziniGlavniUrednik = magaziniGlavniUrednik;
+	}
+	
 
 	
 }
