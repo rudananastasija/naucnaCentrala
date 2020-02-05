@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -164,8 +165,9 @@ public class RegisterController {
 	}
 	
 	@GetMapping(path = "/getFormPotvrda/{task}", produces = "application/json")
+	@PreAuthorize("hasAuthority('POTVRDI_RECENZENT')") 
     public @ResponseBody FormFieldsDto getFormPotvrda(@PathVariable String task) {
-		System.out.println("dosao po formu za potvrdu");
+		System.out.println("dosao po formu za potvrdu recenzenta");
 	
 		Task pronadjenTask = taskService.createTaskQuery().taskId(task).singleResult();
 		String processId = pronadjenTask.getProcessInstanceId();

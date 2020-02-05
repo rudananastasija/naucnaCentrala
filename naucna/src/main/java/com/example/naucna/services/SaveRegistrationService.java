@@ -10,10 +10,12 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.identity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.example.naucna.model.FormSubmissionDto;
 import com.example.naucna.model.NaucnaOblast;
+import com.example.naucna.model.Role;
 
 
 @Service
@@ -27,6 +29,11 @@ public class SaveRegistrationService implements JavaDelegate{
 
 	@Autowired
 	NaucnaOblastService naucnaOblastService;
+	 
+	@Autowired
+	RoleService roleService;
+
+	   
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
@@ -44,15 +51,11 @@ public class SaveRegistrationService implements JavaDelegate{
 				
 			}
 			if(formField.getFieldId().equals("lozinka")) {
-				String enkriptnovanaSifra = "";
-				  try {
-					  enkriptnovanaSifra = userService.enkriptuj(formField.getFieldValue());
-					} catch (NoSuchAlgorithmException e) {
-						// TODO Auto-generated catch block
-						enkriptnovanaSifra=formField.getFieldValue();
-						e.printStackTrace();
-					}
-				user.setPassword(enkriptnovanaSifra);
+				String salt = BCrypt.gensalt();
+	            String enkriptnovanaSifra = BCrypt.hashpw(formField.getFieldValue(), salt);   
+				System.out.println("enkriptovana sifra " + enkriptnovanaSifra);
+	            user.setPassword(enkriptnovanaSifra);
+				
 				korisnik.setLozinka(enkriptnovanaSifra);
 			}
 			if(formField.getFieldId().equals("ime")) {
@@ -102,6 +105,8 @@ public class SaveRegistrationService implements JavaDelegate{
 				}
 			}
 	      }
+	      Role role = roleService.findOneByName("ROLE_USER");
+	      korisnik.getRoles().add(role);
 	      korisnik.setVerifikovan(false);
 	      identityService.saveUser(user);
 	      userService.saveUser(korisnik);

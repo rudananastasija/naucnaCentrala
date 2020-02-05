@@ -1,5 +1,9 @@
 package com.example.naucna.services;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +33,19 @@ public class MagazinService implements MagazinServiceImp{
 		// TODO Auto-generated method stub
 		 repozitorijum.delete(m);
 	}
+
+	@Override
+	public List<Magazin> getAll() {
+		// TODO Auto-generated method stub
+		return repozitorijum.findAll();
+	}
+
+	@Override
+	public Magazin findOneById(Long id) {
+		// TODO Auto-generated method stub
+		return repozitorijum.findOneById(id);
+	}
+
+	
 
 }

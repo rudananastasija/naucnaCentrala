@@ -31,7 +31,11 @@ public class UpdateMagazinService implements JavaDelegate{
 		 List<FormSubmissionDto> magazinForm = (List<FormSubmissionDto>)execution.getVariable("magazin");
 	     
 		 Magazin magazin = new Magazin();
-	     
+		 
+		 String username = (String) execution.getVariable("glavniUrednik");
+	     User glavniUrednik = userService.findUserByUsername(username);
+
+	     	     
 	     for (FormSubmissionDto formField : magazinForm) {
 			
 				if(formField.getFieldId().equals("ISSN")) {
@@ -39,9 +43,7 @@ public class UpdateMagazinService implements JavaDelegate{
 					break;
 				}
 			}
-	     System.out.println("");
-	     
-
+	  
 		 List<FormSubmissionDto> updateForm = (List<FormSubmissionDto>)execution.getVariable("updateMagazin");
 		 if(updateForm == null) {
 	    	 System.out.println("updateForm je null");
@@ -73,10 +75,9 @@ public class UpdateMagazinService implements JavaDelegate{
 			  }
 		}
 		  
-
+		  magazin.setGlavniUrednik(glavniUrednik);
 	      magazinService.saveMagazin(magazin);
-
-			System.out.println("sacuvao magazin");		
+	      System.out.println("sacuvao magazin");		
 	}
 
 }

@@ -25,14 +25,13 @@ public class CuvanjeMagazina implements JavaDelegate{
 	@Autowired
 	NaucnaOblastService naucnaOblastService;
 
-
 	@Autowired
 	MagazinService magazinService;
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		
 		 List<FormSubmissionDto> magazinForm = (List<FormSubmissionDto>)execution.getVariable("magazin");
-	      Magazin newMagazin = new Magazin();
+	     Magazin newMagazin = new Magazin();
 		 for (FormSubmissionDto formField : magazinForm) {
 			if(formField.getFieldId().equals("naziv")) {
 				newMagazin.setName(formField.getFieldValue());

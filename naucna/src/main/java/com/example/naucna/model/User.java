@@ -1,6 +1,9 @@
 package com.example.naucna.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,10 +19,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class User {
+public class User implements UserDetails{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -75,7 +81,13 @@ public class User {
 	@JsonIgnore
 	private Set<Magazin> magaziniGlavniUrednik = new HashSet<Magazin>();
 
+	 @ManyToMany(cascade =  {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	    @JoinTable(name = "user_roles",
+	            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+	            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+	    protected List<Role> roles = new ArrayList<>();
 
+	   
 	public User() {
 		super();
 	}
@@ -239,6 +251,46 @@ public class User {
 
 	public void setMagaziniGlavniUrednik(Set<Magazin> magaziniGlavniUrednik) {
 		this.magaziniGlavniUrednik = magaziniGlavniUrednik;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		  // uvek ima samo jednu rolu - uzmi privilegije i vrati
+        if(!this.roles.isEmpty()){
+            Role r = roles.iterator().next();
+            List<Privilege> privileges = new ArrayList<Privilege>();
+            for(Privilege p : r.getPrivileges()){
+                privileges.add(p);
+            }
+            return privileges;
+        }
+        return null;
+	}
+
+	@Override
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		return this.lozinka;
+	}
+
+	@Override
+    public boolean isAccountNonExpired() { return true; }
+
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+
+    @Override
+    public boolean isEnabled() { return true; }
+
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
 	}
 	
 

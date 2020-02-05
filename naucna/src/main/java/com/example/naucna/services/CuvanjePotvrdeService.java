@@ -8,6 +8,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.naucna.model.FormSubmissionDto;
+import com.example.naucna.model.Role;
 
 @Service
 public class CuvanjePotvrdeService implements JavaDelegate{
@@ -17,11 +18,15 @@ public class CuvanjePotvrdeService implements JavaDelegate{
 	IdentityService identityService;
 	@Autowired
 	UserService userService;
+	@Autowired
+	RoleService roleService;
+
+	
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("stigao u execute od cuvanje potrvrde");
+		System.out.println("stigao u execute od cuvanje potrvrde da je korisnik recenzent");
 		 boolean potvrdaFlag = (boolean)execution.getVariable("potvrda");
 	      com.example.naucna.model.User korisnik = new com.example.naucna.model.User();
 	      List<FormSubmissionDto> registration = (List<FormSubmissionDto>)execution.getVariable("registration");
@@ -34,15 +39,20 @@ public class CuvanjePotvrdeService implements JavaDelegate{
 			if(korisnik != null) {
 			
 				   if(potvrdaFlag) {
-				    	  korisnik.setUloga("REC");
-				    	  korisnik.setRecenzent(true);
+					   Role oldRole = roleService.findOneByName("ROLE_USER");
+					      
+					   	Role role = roleService.findOneByName("ROLE_RECENZENT");
+					   	
+					    korisnik.getRoles().remove(oldRole); 
+					   	korisnik.getRoles().add(role);
+				    	korisnik.setRecenzent(true);
+
+						   System.out.println("sacuvao recenzenta!");
 				   }else {
-				    	  korisnik.setUloga("KORISNIK");
 				    	  korisnik.setRecenzent(false);
-				      }
+				   }
 				   userService.saveUser(korisnik);
 					
-				   System.out.println("Izmjenio korisnika");
 			
 			}	
 	   

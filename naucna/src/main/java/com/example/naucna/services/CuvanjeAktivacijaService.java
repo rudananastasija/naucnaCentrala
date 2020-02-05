@@ -17,7 +17,7 @@ public class CuvanjeAktivacijaService implements JavaDelegate{
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("stigao u execute od cuvanje aktivacije");
+		System.out.println("stigao u execute od cuvanje aktivacije naloga");
 		 boolean potvrdaFlag = (boolean)execution.getVariable("aktivacija");
 	      com.example.naucna.model.User korisnik = new com.example.naucna.model.User();
 	      List<FormSubmissionDto> registration = (List<FormSubmissionDto>)execution.getVariable("registration");

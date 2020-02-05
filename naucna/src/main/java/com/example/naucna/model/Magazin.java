@@ -27,7 +27,7 @@ public class Magazin {
 	private String name;
 	@Column
 	private Long issn;
-	//ako je true onda urednik placa, korisnicima besplkatno
+	//ako je true onda urednik placa, korisnicima besplatno
 	@Column
 	private boolean placanje;
 	@Column
@@ -58,6 +58,11 @@ public class Magazin {
 
 	@ManyToOne( fetch = FetchType.EAGER)	
 	private User glavniUrednik;
+	
+	@OneToMany(mappedBy = "magazin", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Set<Text> tekstovi= new HashSet<Text>();
+	
 	public Magazin() {
 		super();
 	}
@@ -116,6 +121,18 @@ public class Magazin {
 	}
 	public void setAktiviran(boolean aktiviran) {
 		this.aktiviran = aktiviran;
+	}
+	public User getGlavniUrednik() {
+		return glavniUrednik;
+	}
+	public void setGlavniUrednik(User glavniUrednik) {
+		this.glavniUrednik = glavniUrednik;
+	}
+	public Set<Text> getTekstovi() {
+		return tekstovi;
+	}
+	public void setTekstovi(Set<Text> tekstovi) {
+		this.tekstovi = tekstovi;
 	}
 	
 	
