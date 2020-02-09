@@ -10,23 +10,30 @@ import org.springframework.stereotype.Service;
 
 import com.example.naucna.model.FormSubmissionDto;
 import com.example.naucna.model.Magazin;
-import com.example.naucna.security.TokenUtils;
-@Service
-public class SlanjeMejlaService implements JavaDelegate{
+import com.example.naucna.model.Text;
 
+
+@Service
+public class MejlRadNijeOdobren implements JavaDelegate{
+	@Autowired
+	IdentityService identityService;
+	@Autowired
+	UserService userService;
+	@Autowired
+	RoleService roleService;
+	@Autowired
+	 TextService textService;
 	@Autowired 
 	private EMailService emailService;
-	@Autowired
-	private UserServiceImp service;
+	
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
-		com.example.naucna.model.User korisnik = new com.example.naucna.model.User();
-		String autorUsername = (String)execution.getVariable("autor");
-		korisnik = service.findUserByUsername(autorUsername);
-		emailService.sendNotificaitionAutor(korisnik,execution.getProcessInstanceId());
+		String rad = (String)execution.getVariable("textId");
+		Text text = textService.findById(Long.parseLong(rad));
 		
+		System.out.println("urednik mejl "+text.getAutor().getEmail());
+		emailService.sendNotificaitionTemaNeodobrena(text,execution.getProcessInstanceId());
+
 	}
-
-
 }

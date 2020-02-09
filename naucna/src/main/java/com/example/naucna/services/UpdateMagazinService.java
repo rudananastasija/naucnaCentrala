@@ -58,6 +58,8 @@ public class UpdateMagazinService implements JavaDelegate{
 						for(String s : uredniciId) {
 							Long id = Long.parseLong(s);
 							User user =  userService.findById(id);
+
+							System.out.println("urednik je "+user.getIme());
 							magazin.getUrednici().add(user);
 						}
 					}
@@ -69,6 +71,7 @@ public class UpdateMagazinService implements JavaDelegate{
 						for(String s : recId) {
 							Long id = Long.parseLong(s);
 							User user =  userService.findById(id);
+							System.out.println("recenzent je "+user.getIme());
 							magazin.getRecenzenti().add(user);
 						}
 					}
@@ -76,7 +79,11 @@ public class UpdateMagazinService implements JavaDelegate{
 		}
 		  
 		  magazin.setGlavniUrednik(glavniUrednik);
-	      magazinService.saveMagazin(magazin);
+	      Magazin sacuvaniMagazin = magazinService.saveMagazin(magazin);
+	      for(User u :sacuvaniMagazin.getRecenzenti()) {
+	    	  System.out.println("sacuvani rece" + u.getIme());
+	      }
+	      
 	      System.out.println("sacuvao magazin");		
 	}
 

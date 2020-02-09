@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 
@@ -131,17 +132,33 @@ public class UserController {
 		
 		if(korisnik != null) {
 			System.out.println("nije korisnik null");
-			
-			if(korisnik.getUloga().equals("admin")) {
+			boolean flag = false;
+			for(com.example.naucna.model.Role role: korisnik.getRoles()){
+                if(role.getName().equals("ROLE_ADMIN")){
+                	flag = true;
+                    break;
+                    
+                }
+            }
+            
+			if(flag) {
 				tasks.addAll(taskService.createTaskQuery().processDefinitionKey("RegistracijaId").taskAssignee("demo").list());
 				System.out.println("nije korisnik null 2");
 				tasks.addAll(taskService.createTaskQuery().processDefinitionKey("procesCasopisID").taskAssignee("demo").list());
+				tasks.addAll(taskService.createTaskQuery().processDefinitionKey("procesObradaId").taskAssignee("demo").list());
+				
+			}else {
+				System.out.println("ovdje dosao");
+				tasks.addAll(taskService.createTaskQuery().processDefinitionKey("RegistracijaId").taskAssignee(username).list());
+				tasks.addAll(taskService.createTaskQuery().processDefinitionKey("procesCasopisID").taskAssignee(username).list());
+				tasks.addAll(taskService.createTaskQuery().processDefinitionKey("procesObradaId").taskAssignee(username).list());
+				
 			}
 		}
 		ArrayList<TaskDto> taskoviDto=  new ArrayList<TaskDto>();
 		
 		for(Task t:tasks) {
-			System.out.println("Ubacivanje taskova");
+			System.out.println("Ubacivanje taskova"+t.getAssignee());
 			taskoviDto.add(new TaskDto(t.getId(),t.getName(),t.getAssignee()));
 		}
 		System.out.println("broj taskova je"+taskoviDto.size());
@@ -178,4 +195,6 @@ public class UserController {
 		}
 		return new ResponseEntity<List<UserDto>>(rec, HttpStatus.OK);
 	}
+	
+	
 }

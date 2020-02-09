@@ -71,17 +71,22 @@ public class RegisterController {
 		TaskFormData tfd = formService.getTaskFormData(task.getId());
 		List<FormField> properties = tfd.getFormFields();
 		List<FormFieldValidationConstraint> constraints = new ArrayList<FormFieldValidationConstraint>();
+		
 		List<OgranicenjeDto> ogranicenja = new ArrayList<OgranicenjeDto>();
 		
 		for(FormField ff : properties) {
+			
 			OgranicenjeDto ogranicenje = new OgranicenjeDto(ff.getId(),false);
+			
 			for(int i = 0;i<ff.getValidationConstraints().size();i++) {
 				System.out.println("u petlji");
+				
 				ogranicenje.setRequired(true);
 				constraints.add(ff.getValidationConstraints().get(i));
 			}
 			
-			ogranicenja.add(ogranicenje);		}
+			ogranicenja.add(ogranicenje);	
+			}
 		return new FormFieldsDto(task.getId(), properties, pi.getId(),constraints,ogranicenja);
     }
 	
@@ -206,8 +211,10 @@ public class RegisterController {
 	@GetMapping(path = "/getFormAktivacija/{processInstanceId}", produces = "application/json")
     public @ResponseBody FormFieldsDto getFormAktivacija(@PathVariable String processInstanceId) {
 		System.out.println("dosao po formu za aktivaciju");
+	
 		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
-		List<TaskDto> tasksDto = new ArrayList<TaskDto>();
+		
+		/*List<TaskDto> tasksDto = new ArrayList<TaskDto>();
 		for(int i =0;i<tasks.size();i++) {
 			TaskDto newTaskDto = new TaskDto();
 			newTaskDto.setTaskId(tasks.get(i).getId());
@@ -220,6 +227,7 @@ public class RegisterController {
 		activeTask.setAssignee("korisnik");
 		taskService.saveTask(activeTask);
 		
+		*/
 		TaskFormData tfd = formService.getTaskFormData(tasks.get(0).getId());
 		List<FormField> properties = tfd.getFormFields();
 		for(FormField fp : properties) {
@@ -314,9 +322,9 @@ public class RegisterController {
 			formService.submitTaskForm(taskId, map);
 	        List<Task> taskList = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
 	        System.out.println("sacuvao variable urednik");
-			
+		
 	        for(Task t : taskList) {
-				System.out.println(" task "+t.getAssignee()+" ii " +t.getId());
+	        	System.out.println(" task "+t.getAssignee()+" ii " +t.getId());
 			}
 	        return new ResponseEntity<>(HttpStatus.OK);
 			

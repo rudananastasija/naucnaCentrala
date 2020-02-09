@@ -3,6 +3,7 @@ package com.example.naucna.model;
 public class OgranicenjeDto {
 	String fieldName;
 	boolean required;
+	
 	public String getFieldName() {
 		return fieldName;
 	}

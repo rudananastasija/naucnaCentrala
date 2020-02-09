@@ -30,28 +30,28 @@ public class User implements UserDetails{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name = "ime", nullable = false)
+	@Column(name = "ime", nullable = true)
 	private String ime;
 
-	@Column(name = "prezime", nullable = false)
+	@Column(name = "prezime")
 	private String prezime;
 	
-	@Column(name = "email", nullable = false)
+	@Column(name = "email")
 	private String email;
 	
-	@Column(name="grad", nullable= false)
+	@Column(name="grad")
 	private String grad;
 	
-	@Column(name="drzava", nullable= false)
+	@Column(name="drzava")
 	private String drzava;
 	
-	@Column(name="titula", nullable= true)
+	@Column(name="titula")
 	private String titula;
 	
-	@Column(name="recenzent", nullable= true)
+	@Column(name="recenzent")
 	private boolean recenzent;
 	
-	@Column(name = "username", nullable = false)
+	@Column(name = "username")
 	private String username;
 
 	@Column(name="lozinka")
@@ -70,6 +70,23 @@ public class User implements UserDetails{
 	        inverseJoinColumns = { @JoinColumn(name = "naucnaOblast_id") }
 	  )
 	private Set<NaucnaOblast> naucneOblasti = new HashSet<NaucnaOblast>();
+	
+	
+	@ManyToMany(cascade = {CascadeType.ALL})
+	@JoinTable(
+	        name = "User_Text", 
+	        joinColumns = { @JoinColumn(name = "user_id") }, 
+	        inverseJoinColumns = { @JoinColumn(name = "text_id") }
+	  )
+	private Set<Text> radoviKoautor = new HashSet<Text>();
+	
+	@ManyToMany(cascade = {CascadeType.ALL})
+	@JoinTable(
+	        name = "User_Text", 
+	        joinColumns = { @JoinColumn(name = "user_id") }, 
+	        inverseJoinColumns = { @JoinColumn(name = "text_id") }
+	  )
+	private Set<Text> radoviRecenzent = new HashSet<Text>();
 
 	@ManyToMany(mappedBy = "urednici")
 	private Set<Magazin> magaziniUrednik = new HashSet<Magazin>();
@@ -81,11 +98,16 @@ public class User implements UserDetails{
 	@JsonIgnore
 	private Set<Magazin> magaziniGlavniUrednik = new HashSet<Magazin>();
 
-	 @ManyToMany(cascade =  {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "autor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Set<Text> radoviAutor = new HashSet<Text>();
+
+	
+	@ManyToMany(cascade =  {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	    @JoinTable(name = "user_roles",
 	            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 	            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-	    protected List<Role> roles = new ArrayList<>();
+	protected List<Role> roles = new ArrayList<>();
 
 	   
 	public User() {
@@ -291,6 +313,30 @@ public class User implements UserDetails{
 
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
+	}
+
+	public Set<Text> getRadoviKoautor() {
+		return radoviKoautor;
+	}
+
+	public void setRadoviKoautor(Set<Text> radoviKoautor) {
+		this.radoviKoautor = radoviKoautor;
+	}
+
+	public Set<Text> getRadoviAutor() {
+		return radoviAutor;
+	}
+
+	public void setRadoviAutor(Set<Text> radoviAutor) {
+		this.radoviAutor = radoviAutor;
+	}
+
+	public Set<Text> getRadoviRecenzent() {
+		return radoviRecenzent;
+	}
+
+	public void setRadoviRecenzent(Set<Text> radoviRecenzent) {
+		this.radoviRecenzent = radoviRecenzent;
 	}
 	
 

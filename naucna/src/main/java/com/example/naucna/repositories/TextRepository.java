@@ -8,5 +8,6 @@ import com.example.naucna.model.Text;
 
 @Repository
 public interface TextRepository extends JpaRepository<Text,Long>{
-
+	Text findOneById(Long id);
+	
 }

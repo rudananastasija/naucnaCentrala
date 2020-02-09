@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -25,6 +26,9 @@ public class Text {
 	@Column
 	private String rezime;
 	
+	@Column
+	private String fajl;
+	
 	@OneToMany(mappedBy = "text", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<KljucnaRijec> kljucneRijeci= new HashSet<KljucnaRijec>();
@@ -34,6 +38,17 @@ public class Text {
 	
 	@ManyToOne( fetch = FetchType.EAGER)	
 	private NaucnaOblast oblast;
+	
+	@ManyToOne( fetch = FetchType.EAGER)	
+	private User autor;
+	
+	@ManyToMany(mappedBy = "radoviKoautor")
+	private Set<User> koautori = new HashSet<User>();
+	
+	@ManyToMany(mappedBy = "radoviRecenzent")
+	private Set<User> recenzenti = new HashSet<User>();
+
+
 	
 	public Text() {
 		super();
@@ -89,6 +104,30 @@ public class Text {
 	}
 	public void setOblast(NaucnaOblast oblast) {
 		this.oblast = oblast;
+	}
+	public User getAutor() {
+		return autor;
+	}
+	public void setAutor(User autor) {
+		this.autor = autor;
+	}
+	public Set<User> getKoautori() {
+		return koautori;
+	}
+	public void setKoautori(Set<User> koautori) {
+		this.koautori = koautori;
+	}
+	public String getFajl() {
+		return fajl;
+	}
+	public void setFajl(String fajl) {
+		this.fajl = fajl;
+	}
+	public Set<User> getRecenzenti() {
+		return recenzenti;
+	}
+	public void setRecenzenti(Set<User> recenzenti) {
+		this.recenzenti = recenzenti;
 	}
 	
 	

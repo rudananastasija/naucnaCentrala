@@ -1,5 +1,4 @@
 package com.example.naucna.services;
-
 import java.util.List;
 
 import org.camunda.bpm.engine.IdentityService;
@@ -12,8 +11,7 @@ import com.example.naucna.model.FormSubmissionDto;
 import com.example.naucna.model.Magazin;
 import com.example.naucna.security.TokenUtils;
 @Service
-public class SlanjeMejlaService implements JavaDelegate{
-
+public class SlanjeMejlaFormatNijeOk implements JavaDelegate{
 	@Autowired 
 	private EMailService emailService;
 	@Autowired
@@ -24,9 +22,9 @@ public class SlanjeMejlaService implements JavaDelegate{
 		com.example.naucna.model.User korisnik = new com.example.naucna.model.User();
 		String autorUsername = (String)execution.getVariable("autor");
 		korisnik = service.findUserByUsername(autorUsername);
-		emailService.sendNotificaitionAutor(korisnik,execution.getProcessInstanceId());
+		emailService.sendNotificaitionAutorNijeDobarSadrzaj(korisnik,execution.getProcessInstanceId());
+		
 		
 	}
-
 
 }

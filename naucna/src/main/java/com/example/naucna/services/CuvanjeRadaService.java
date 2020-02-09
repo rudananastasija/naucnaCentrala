@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.naucna.model.Text;
+import com.example.naucna.model.User;
 import com.example.naucna.model.FormSubmissionDto;
 import com.example.naucna.model.KljucnaRijec;
 import com.example.naucna.model.Magazin;
@@ -23,7 +24,9 @@ public class CuvanjeRadaService implements JavaDelegate{
 	@Autowired
 	NaucnaOblastService naucnaOblastService;
 
-	
+
+	@Autowired
+	private UserServiceImp service;
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
@@ -40,6 +43,10 @@ public class CuvanjeRadaService implements JavaDelegate{
 			}	      
 		  }
 		List<FormSubmissionDto> radForm = (List<FormSubmissionDto>)execution.getVariable("rad");
+		
+		String autorUsername = (String)execution.getVariable("autor");
+		User autor = service.findUserByUsername(autorUsername);
+		
 	     Text noviText= new Text();
 		for (FormSubmissionDto formField : radForm) {
 			System.out.println("usao u petlju");
@@ -50,6 +57,12 @@ public class CuvanjeRadaService implements JavaDelegate{
 			}
 			if(formField.getFieldId().equals("apstrakt")) {
 				noviText.setRezime(formField.getFieldValue());
+ 				System.out.println(" naslo apse "+formField.getFieldValue());
+					
+			}
+			
+			if(formField.getFieldId().equals("pdfFajl")) {
+				noviText.setFajl(formField.getFieldValue());
 				System.out.println(" naslo apse "+formField.getFieldValue());
 					
 			}
@@ -74,8 +87,10 @@ public class CuvanjeRadaService implements JavaDelegate{
 				
 			}
 		  }
+		noviText.setAutor(autor);
 		noviText.setMagazin(izabraniMagazin);
-		textService.savetext(noviText);
+		Text sacuvanText = textService.savetext(noviText);
+		execution.setVariable("textId", sacuvanText.getId().toString());
 	    System.out.println("sacuvao tekst");
 	}
 

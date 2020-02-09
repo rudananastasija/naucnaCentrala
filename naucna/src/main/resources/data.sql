@@ -9,13 +9,34 @@ insert into user(id,ime,prezime,email,grad,drzava,titula,recenzent,username,lozi
 123,'Rec1','Recic','rec1@gmail.com','NS','SRB','dr',true,'rec1','$2a$10$.xqfFJKIOGxEzUz0f2ZIYOx7roR8kv8647OcxhqWsVhs6PwbdK4Mm','REC',true);
 
 insert into user(id,ime,prezime,email,grad,drzava,titula,recenzent,username,lozinka,uloga,verifikovan) values (
-125,'Rec2','Recic','rec2@gmail.com','NS','SRB','dr',true,'rec2','0e138a7406b6583942db7e3fea19a349e9ac607bf008a0cfdc30c5f675d56b5d','REC',true);
+125,'Rec2','Recic','rec2@gmail.com','NS','SRB','dr',true,'rec2','$2a$10$eBGUHIMgZK3ncFhw7CrSTuCnh.fHNMpVBmS.cL5hJU.7hvMfIIUBm','REC',true);
+insert into user(id,ime,prezime,email,grad,drzava,titula,recenzent,username,lozinka,uloga,verifikovan) values (
+111,'Rec3','Recic','rec3@gmail.com','NS','SRB','dr',true,'rec3','$2a$10$eBGUHIMgZK3ncFhw7CrSTuCnh.fHNMpVBmS.cL5hJU.7hvMfIIUBm','REC',true);
+insert into user(id,ime,prezime,email,grad,drzava,titula,recenzent,username,lozinka,uloga,verifikovan) values (
+112,'Rec4','Recic','rec4@gmail.com','NS','SRB','dr',true,'rec3','$2a$10$eBGUHIMgZK3ncFhw7CrSTuCnh.fHNMpVBmS.cL5hJU.7hvMfIIUBm','REC',true);
 
 insert into user(id,ime,prezime,email,grad,drzava,titula,recenzent,username,lozinka,uloga,verifikovan) values (
 1919,'Urednik1','Recic','rudananastasijaa@gmail.com','NS','SRB','dr',false,'miso','$2a$10$eBGUHIMgZK3ncFhw7CrSTuCnh.fHNMpVBmS.cL5hJU.7hvMfIIUBm','urednik',true);
 insert into user(id,ime,prezime,email,grad,drzava,titula,recenzent,username,lozinka,uloga,verifikovan) values (
-1278,'Urednik2','Recic','urednik2@gmail.com','NS','SRB','dr',false,'pera','$2a$10$eBGUHIMgZK3ncFhw7CrSTuCnh.fHNMpVBmS.cL5hJU.7hvMfIIUBm','urednik',true);
+1278,'Urednik2','Recic','pudarmilica@yahoo.com','NS','SRB','dr',false,'milica','$2a$10$eBGUHIMgZK3ncFhw7CrSTuCnh.fHNMpVBmS.cL5hJU.7hvMfIIUBm','urednik',true);
 
+delete from user_naucna_oblast;
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (1919,1);
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (1919,2);
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (1919,3);
+
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (1278,1);
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (1278,2);
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (1278,3);
+
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (111,1);
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (112,1);
+
+
+
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (123,1);
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (123,2);
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (125,3);
 
 delete from role;
 insert into role values (1, 'ROLE_USER');
