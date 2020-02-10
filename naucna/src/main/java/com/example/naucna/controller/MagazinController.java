@@ -114,7 +114,6 @@ public class MagazinController {
 		public @ResponseBody FormFieldsDto getFormaObradaTeksta(@Context HttpServletRequest request) {
 			System.out.println("dosao po magazine za izbor u obradi teksta"); 
 			String username = Utils.getUsernameFromRequest(request, tokenUtils);
-			// ZABORAVILA SI POSTAVITI CURKO !!!
 			ProcessInstance pi = runtimeService.startProcessInstanceByKey("procesObradaId");
 			runtimeService.setVariable(pi.getProcessInstanceId(),"activator", username);
 			System.out.println("dosao da startuje proces obrada text "+username);
@@ -485,7 +484,7 @@ public class MagazinController {
 						}
 					}
 					//ovdje treba obraditi slucaj da nema dovoljno rec
-					if(lista.size() > 0) {
+					if(lista.size() > 1) {
 						for(FormField field : properties){
 				            if(field.getId().equals("rec")){
 				                EnumFormType enumType = (EnumFormType) field.getType();

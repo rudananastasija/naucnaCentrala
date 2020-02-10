@@ -3,8 +3,6 @@ package com.example.naucna.controller;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 
@@ -25,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.naucna.model.NaucnaOblast;
 import com.example.naucna.model.NaucnaOblastDto;
+import com.example.naucna.model.Role;
 import com.example.naucna.model.TaskDto;
 import com.example.naucna.model.User;
 import com.example.naucna.model.UserDto;
@@ -179,11 +178,17 @@ public class UserController {
 		List<UserDto> urednici = new ArrayList<UserDto>();
 		
 		for(User u:useri) {
-			if(u.getUloga().equals("urednik")) {
-				UserDto newUser = new UserDto(u.getId(),u.getIme(),u.getUloga());
-				
-				urednici.add(newUser);
-			}
+			 if(u.getUsername() != "" && u.getUsername() != null) {
+		            for(Role role: u.getRoles()){
+		                
+		                if(role.getName().equals("ROLE_UREDNIK")){
+		            		UserDto newUser = new UserDto(u.getId(),u.getIme(),u.getUloga());
+		    				
+		    				urednici.add(newUser);
+		    				break;
+		                }         
+		             }	
+			 }
 		}
 		return new ResponseEntity<List<UserDto>>(urednici, HttpStatus.OK);
 	}
@@ -194,10 +199,19 @@ public class UserController {
 		List<User> useri = service.getAll();
 		List<UserDto> rec = new ArrayList<UserDto>();
 		for(User u:useri) {
-			if(u.getUloga().equals("REC")) {
-				UserDto newUser = new UserDto(u.getId(),u.getIme(),u.getUloga());
-				rec.add(newUser);
-			}
+			
+			if(u.getUsername() != "" && u.getUsername() != null) {
+	            for(Role role: u.getRoles()){
+	                
+	                if(role.getName().equals("ROLE_RECENZENT")){
+	            		UserDto newUser = new UserDto(u.getId(),u.getIme(),u.getUloga());
+	    				
+	            		rec.add(newUser);
+	            		break;
+	                }         
+	             }	
+		 }
+		
 		}
 		return new ResponseEntity<List<UserDto>>(rec, HttpStatus.OK);
 	}
