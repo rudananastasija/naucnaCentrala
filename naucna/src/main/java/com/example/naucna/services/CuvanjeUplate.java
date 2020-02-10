@@ -18,12 +18,13 @@ public class CuvanjeUplate  implements JavaDelegate{
 		User autor = new User();
 		String autorUsername = (String)execution.getVariable("activator");
 		
-		autor = userService.findUserByEmail(autorUsername);    
+		autor = userService.findUserByUsername(autorUsername);    
 		if(autor != null) {
 			autor.setPlaceno(true);
 
 			System.out.println("uplaceno je");
 			userService.saveUser(autor);
+			
 		}
 		
 	}

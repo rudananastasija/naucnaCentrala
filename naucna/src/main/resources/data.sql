@@ -30,6 +30,8 @@ insert into user_naucna_oblast(user_id,naucna_oblast_id) values (1278,2);
 insert into user_naucna_oblast(user_id,naucna_oblast_id) values (1278,3);
 
 insert into user_naucna_oblast(user_id,naucna_oblast_id) values (111,1);
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (112,2);
+insert into user_naucna_oblast(user_id,naucna_oblast_id) values (111,2);
 insert into user_naucna_oblast(user_id,naucna_oblast_id) values (112,1);
 
 
@@ -57,8 +59,11 @@ insert into roles_privileges values (3, 2);
 delete from user_roles;
 insert into user_roles values (155, 2);
 insert into user_roles values (123, 5);
-
 insert into user_roles values (125, 5);
+
 insert into user_roles values (1919, 3);
 
 insert into user_roles values (1278, 3);
+insert into user_roles values (111, 5);
+
+insert into user_roles values (112, 5);

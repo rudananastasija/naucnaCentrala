@@ -687,7 +687,7 @@ execution.setVariable("brojRec",brojac);</bpmn:script>
       <bpmn:outgoing>SequenceFlow_0z2okus</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_0z2okus" sourceRef="Task_1fbw2qa" targetRef="Task_13002q8" />
-    <bpmn:userTask id="Task_13002q8" name="Ispravke sadrzaja" camunda:assignee="autor">
+    <bpmn:userTask id="Task_13002q8" name="Ispravke sadrzaja" camunda:assignee="${activator}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="naslovIspravke" label="Naslov Rada" type="string" defaultValue="${naslov}" />
@@ -708,20 +708,15 @@ execution.setVariable("brojRec",brojac);</bpmn:script>
     <bpmn:boundaryEvent id="IntermediateThrowEvent_0cgpjgj" attachedToRef="Task_13002q8">
       <bpmn:outgoing>SequenceFlow_0pc4b88</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1ubzhhc">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10M</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0jhcuxp" sourceRef="Task_13002q8" targetRef="Task_01mg8v5" />
     <bpmn:serviceTask id="Task_01mg8v5" name="cuvanje ispravka sadrzaja" camunda:class="com.example.naucna.services.CuvanjeIspravkePdf">
       <bpmn:incoming>SequenceFlow_0jhcuxp</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_08n5r3j</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_12211l3</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_08n5r3j" sourceRef="Task_01mg8v5" targetRef="Task_0xb0ftg" />
-    <bpmn:endEvent id="EndEvent_0682t8r">
-      <bpmn:incoming>SequenceFlow_12211l3</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_12211l3" sourceRef="Task_01mg8v5" targetRef="EndEvent_0682t8r" />
     <bpmn:endEvent id="EndEvent_1nilu7l">
       <bpmn:incoming>SequenceFlow_0nuscbt</bpmn:incoming>
     </bpmn:endEvent>
@@ -1250,28 +1245,30 @@ execution.setVariable("brojRec",brojac);</bpmn:script>
         <dc:Bounds x="1932" y="372" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0pg8x2y_di" bpmnElement="SequenceFlow_0pg8x2y">
-        <di:waypoint x="1330" y="566" />
-        <di:waypoint x="1350" y="566" />
+        <di:waypoint x="1260" y="566" />
+        <di:waypoint x="1305" y="566" />
+        <di:waypoint x="1305" y="600" />
+        <di:waypoint x="1350" y="600" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1qbeqqu_di" bpmnElement="Task_0xb0ftg">
-        <dc:Bounds x="1230" y="526" width="100" height="80" />
+        <dc:Bounds x="1160" y="526" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_16ekcdq_di" bpmnElement="SequenceFlow_16ekcdq">
-        <di:waypoint x="1450" y="566" />
-        <di:waypoint x="1475" y="566" />
-        <di:waypoint x="1475" y="570" />
-        <di:waypoint x="1500" y="570" />
+        <di:waypoint x="1450" y="600" />
+        <di:waypoint x="1475" y="600" />
+        <di:waypoint x="1475" y="590" />
+        <di:waypoint x="1500" y="590" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_0q7ae3h_di" bpmnElement="Task_1l7v5wm">
-        <dc:Bounds x="1350" y="526" width="100" height="80" />
+        <dc:Bounds x="1350" y="560" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0dt58xv_di" bpmnElement="SequenceFlow_0dt58xv">
-        <di:waypoint x="1600" y="570" />
-        <di:waypoint x="1645" y="570" />
+        <di:waypoint x="1600" y="590" />
+        <di:waypoint x="1645" y="590" />
         <di:waypoint x="1645" y="485" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_01hu0ki_di" bpmnElement="Task_0ly1nks">
-        <dc:Bounds x="1500" y="530" width="100" height="80" />
+        <dc:Bounds x="1500" y="550" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1ulwzc3_di" bpmnElement="SequenceFlow_1ulwzc3">
         <di:waypoint x="1800" y="390" />
@@ -1357,10 +1354,11 @@ execution.setVariable("brojRec",brojac);</bpmn:script>
         <di:waypoint x="940" y="500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_02o5nhk_di" bpmnElement="SequenceFlow_02o5nhk">
-        <di:waypoint x="976" y="359" />
-        <di:waypoint x="1256" y="526" />
+        <di:waypoint x="960" y="375" />
+        <di:waypoint x="960" y="540" />
+        <di:waypoint x="1160" y="540" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1078" y="425" width="78" height="27" />
+          <dc:Bounds x="1020" y="523" width="78" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1a84k16_di" bpmnElement="Task_13hecox">
@@ -1397,62 +1395,59 @@ execution.setVariable("brojRec",brojac);</bpmn:script>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_04unn7y_di" bpmnElement="SequenceFlow_04unn7y">
         <di:waypoint x="1875" y="660" />
-        <di:waypoint x="2100" y="660" />
-        <di:waypoint x="2100" y="540" />
+        <di:waypoint x="2040" y="660" />
+        <di:waypoint x="2040" y="510" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1948" y="642" width="81" height="14" />
+          <dc:Bounds x="1918" y="642" width="81" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_02asjt5_di" bpmnElement="SequenceFlow_02asjt5">
         <di:waypoint x="1850" y="685" />
-        <di:waypoint x="1850" y="770" />
-        <di:waypoint x="1930" y="770" />
+        <di:waypoint x="1850" y="820" />
+        <di:waypoint x="1900" y="820" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1841" y="725" width="49" height="27" />
+          <dc:Bounds x="1841" y="756" width="49" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_11ozugv_di" bpmnElement="Task_1fbw2qa">
-        <dc:Bounds x="1930" y="730" width="100" height="80" />
+        <dc:Bounds x="1900" y="780" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0z2okus_di" bpmnElement="SequenceFlow_0z2okus">
-        <di:waypoint x="2030" y="770" />
-        <di:waypoint x="2090" y="770" />
+        <di:waypoint x="2000" y="820" />
+        <di:waypoint x="2030" y="820" />
+        <di:waypoint x="2030" y="840" />
+        <di:waypoint x="2060" y="840" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_1i4jf30_di" bpmnElement="Task_13002q8">
-        <dc:Bounds x="2090" y="730" width="100" height="80" />
+        <dc:Bounds x="2060" y="800" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0pc4b88_di" bpmnElement="SequenceFlow_0pc4b88">
-        <di:waypoint x="2160" y="810" />
-        <di:waypoint x="2160" y="890" />
+        <di:waypoint x="2130" y="898" />
+        <di:waypoint x="2130" y="928" />
+        <di:waypoint x="2180" y="928" />
+        <di:waypoint x="2180" y="890" />
         <di:waypoint x="2230" y="890" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_05wv3r1_di" bpmnElement="Task_0h9d3c4">
         <dc:Bounds x="2230" y="850" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BoundaryEvent_1icdaiz_di" bpmnElement="IntermediateThrowEvent_0cgpjgj">
-        <dc:Bounds x="2142" y="792" width="36" height="36" />
+        <dc:Bounds x="2112" y="862" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0jhcuxp_di" bpmnElement="SequenceFlow_0jhcuxp">
-        <di:waypoint x="2140" y="730" />
-        <di:waypoint x="2140" y="700" />
-        <di:waypoint x="2210" y="700" />
-        <di:waypoint x="2210" y="630" />
+        <di:waypoint x="2110" y="800" />
+        <di:waypoint x="2110" y="670" />
+        <di:waypoint x="2250" y="670" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_0gwap54_di" bpmnElement="Task_01mg8v5">
-        <dc:Bounds x="2160" y="550" width="100" height="80" />
+        <dc:Bounds x="2250" y="630" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_08n5r3j_di" bpmnElement="SequenceFlow_08n5r3j">
-        <di:waypoint x="2160" y="590" />
-        <di:waypoint x="1735" y="590" />
+        <di:waypoint x="2250" y="686" />
+        <di:waypoint x="2220" y="690" />
+        <di:waypoint x="1735" y="700" />
         <di:waypoint x="1735" y="540" />
-        <di:waypoint x="1330" y="540" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="EndEvent_0682t8r_di" bpmnElement="EndEvent_0682t8r">
-        <dc:Bounds x="2342" y="572" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_12211l3_di" bpmnElement="SequenceFlow_12211l3">
-        <di:waypoint x="2260" y="590" />
-        <di:waypoint x="2342" y="590" />
+        <di:waypoint x="1260" y="540" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1nilu7l_di" bpmnElement="EndEvent_1nilu7l">
         <dc:Bounds x="2392" y="872" width="36" height="36" />
@@ -1465,10 +1460,10 @@ execution.setVariable("brojRec",brojac);</bpmn:script>
         <dc:Bounds x="2712" y="482" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_1d2qnq3_di" bpmnElement="Task_0tksfh9">
-        <dc:Bounds x="2050" y="460" width="100" height="80" />
+        <dc:Bounds x="1990" y="430" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0j8s69l_di" bpmnElement="SequenceFlow_0j8s69l">
-        <di:waypoint x="2150" y="500" />
+        <di:waypoint x="2090" y="500" />
         <di:waypoint x="2226" y="500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1xgb4yc_di" bpmnElement="Task_18k8q4d">
