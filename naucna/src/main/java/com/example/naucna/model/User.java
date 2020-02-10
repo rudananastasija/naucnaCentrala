@@ -63,6 +63,9 @@ public class User implements UserDetails{
 	@Column(name="verifikovan")
 	private boolean verifikovan;
 	
+	@Column(name="placeno")
+	private boolean placeno;
+	
 	@ManyToMany(cascade = {CascadeType.ALL})
 	@JoinTable(
 	        name = "User_NaucnaOblast", 
@@ -338,6 +341,15 @@ public class User implements UserDetails{
 	public void setRadoviRecenzent(Set<Text> radoviRecenzent) {
 		this.radoviRecenzent = radoviRecenzent;
 	}
+
+	public boolean isPlaceno() {
+		return placeno;
+	}
+
+	public void setPlaceno(boolean placeno) {
+		this.placeno = placeno;
+	}
+	
 	
 
 	

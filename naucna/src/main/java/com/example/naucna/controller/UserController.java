@@ -117,15 +117,21 @@ public class UserController {
 		System.out.println("mail "+username);
 		User korisnik = null;
 		List<User> useri = service.getAll();
+		if(useri.size() == 0) {
+			System.out.println("velicina niza je 0");
+		}
+		
 		for(int i = 0;i<useri.size();i++)
 		{
 			System.out.println("u petlji");
-			
+			if(useri.get(i).getUsername() != null && useri.get(i).getUsername() != "") {
 			if(useri.get(i).getUsername().equals(username)) {
 				korisnik = useri.get(i);
 				System.out.println("nasao usera");
 				
 				break;
+			}
+			
 			}
 		}
 		List<Task> tasks = new ArrayList<Task>();

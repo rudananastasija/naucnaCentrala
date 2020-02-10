@@ -98,26 +98,36 @@ public class MagazinController {
 	@GetMapping(path = "/get", produces = "application/json")
 	@PreAuthorize("hasAuthority('KREIRANJE_CASOPISA')")    
     public @ResponseBody FormFieldsDto get(@Context HttpServletRequest request) {
-		
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("procesCasopisID");
+	    
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).list().get(0);
+		//task.setAssignee(username);
 		TaskFormData tfd = formService.getTaskFormData(task.getId());
 		List<FormField> properties = tfd.getFormFields();
 		
 		return new FormFieldsDto(task.getId(), pi.getId(), properties);
     }
-	
+		
 	
 	   //startovanje procesa za obradu novog teksta
-		@GetMapping(path = "/getFormaObradaTeksta", produces = "application/json")
-		//@PreAuthorize("hasAuthority('KREIRANJE_CASOPISA')")    
-	    public @ResponseBody FormFieldsDto getFormaObradaTeksta(@Context HttpServletRequest request) {
+		 @GetMapping(path = "/getFormaObradaTeksta", produces = "application/json")
+		public @ResponseBody FormFieldsDto getFormaObradaTeksta(@Context HttpServletRequest request) {
 			System.out.println("dosao po magazine za izbor u obradi teksta"); 
+			String username = Utils.getUsernameFromRequest(request, tokenUtils);
+			// ZABORAVILA SI POSTAVITI CURKO !!!
 			ProcessInstance pi = runtimeService.startProcessInstanceByKey("procesObradaId");
+			runtimeService.setVariable(pi.getProcessInstanceId(),"activator", username);
+			System.out.println("dosao da startuje proces obrada text "+username);
+			
 			Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).list().get(0);
+			task.setAssignee(username);
+			taskService.saveTask(task);
+			
 			TaskFormData tfd = formService.getTaskFormData(task.getId());
+			
 			List<FormField> properties = tfd.getFormFields();
 			List<Magazin> casopisi = service.getAll();
+			
 			for(FormField field : properties){
 	            if(field.getId().equals("casopisi")){
 	                EnumFormType enumType = (EnumFormType) field.getType();
@@ -130,7 +140,10 @@ public class MagazinController {
 	        }
 			return new FormFieldsDto(task.getId(), pi.getId(), properties);
 	    }
+		 
+		 
 		
+		 
 	@PostMapping(path = "/dodajMagazin/{taskId}", produces = "application/json"	)
 	public @ResponseBody ResponseEntity dodajMagazin(@RequestBody List<FormSubmissionDto> dto, @PathVariable String taskId, HttpServletRequest request) {
 		System.out.println("U potvrdi magazin je");
@@ -218,26 +231,52 @@ public class MagazinController {
 	
 	@PostMapping(path = "/sacuvajIzborMagazina/{taskId}", produces = "application/json"	)
 	public @ResponseBody ResponseEntity sacuvajIzborMagazina(@RequestBody List<FormSubmissionDto> dto, @PathVariable String taskId) {
-		System.out.println("U sacuvajIzborMagazina");
+		System.out.println("U sacuvajIzborMagazina"+taskId);
 		HashMap<String, Object> map = this.mapListToDto(dto);
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String processInstanceId = task.getProcessInstanceId();
+		System.out.println(" proces instance id"+processInstanceId);
 		
+		Magazin izabraniMagazin = new Magazin();
+		  
 		for(int i = 0;i<dto.size();i++) {
-				if(dto.get(i).getFieldId() == "casopisi") {
+				if(dto.get(i).getFieldId().equals("casopisi")) {
 					if(dto.get(i).getFieldValue()  == null || dto.get(i).getFieldValue().isEmpty()) {
 						System.out.println("prazni casopisi");
 						return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+					}else {
+						Long idMagazina = Long.parseLong(dto.get(i).getFieldValue());
+						System.out.println("id magazina "+idMagazina);
+						izabraniMagazin = service.findOneById(idMagazina);
+						break;
+						
 					}
 				}
 				
 		}
+		
+		User autor = new User();
+		String autorUsername = (String)runtimeService.getVariable(processInstanceId, "activator");
+		System.out.println("autorsko username"+autorUsername);
+		autor = userService.findUserByUsername(autorUsername);    
+		
+		boolean podproces = false;
+		if(izabraniMagazin == null) {
+			System.out.println("null je izabrani magazin");
+		}
+		 if(izabraniMagazin.isPlacanje()) {
+			   
+			  if(!autor.isPlaceno()) {
+				 podproces = true;	
+			  }
+			  
+		  }
 		try {
 
 			runtimeService.setVariable(processInstanceId, "izabraniMagazin", dto);
 			formService.submitTaskForm(taskId, map);
 	       
-	        return new ResponseEntity<>(HttpStatus.OK);
+	        return new ResponseEntity<>(podproces,HttpStatus.OK);
 			
 		}catch(FormFieldValidationException e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -245,11 +284,14 @@ public class MagazinController {
 		}
     }
 	//metoda vraca formu za unos novog rada
-	@GetMapping(path = "/getFormaNoviRad/{processInstanceId}", produces = "application/json")
+	@GetMapping(path = "/getFormaNoviRad/{task}", produces = "application/json")
 	//@PreAuthorize("hasAuthority('POTVRDI_RECENZENT')") 
-    public @ResponseBody FormFieldsDto getFormPotvrda(@PathVariable String processInstanceId) {
+    public @ResponseBody FormFieldsDto getFormPotvrda(@PathVariable String task) {
 		System.out.println("dosao po formu za novi rad");
-		Task activeTask = taskService.createTaskQuery().processInstanceId(processInstanceId).list().get(0);
+		Task activeTask = taskService.createTaskQuery().taskId(task).singleResult();
+		String processInstanceId = activeTask.getProcessInstanceId();
+	
+		//Task activeTask = taskService.createTaskQuery().processInstanceId(processInstanceId).list().get(0);
 		
 		TaskFormData tfd = formService.getTaskFormData(activeTask.getId());
 		List<FormField> properties = tfd.getFormFields();
@@ -523,12 +565,13 @@ public class MagazinController {
 		
 		}
 		
-		@GetMapping(path = "/getFormKoautoriFlag/{processInstanceId}", produces = "application/json")
-		public @ResponseBody FormFieldsDto getFormKoautoriFlag(@PathVariable String processInstanceId) {
+		@GetMapping(path = "/getFormKoautoriFlag/{task}", produces = "application/json")
+		public @ResponseBody FormFieldsDto getFormKoautoriFlag(@PathVariable String task) {
 			System.out.println("dosao u get form koautori flag");
-			System.out.println("proces instance id "+processInstanceId);
-			
-			Task activeTask = taskService.createTaskQuery().processInstanceId(processInstanceId).list().get(0);
+			Task activeTask = taskService.createTaskQuery().taskId(task).singleResult();
+			String processInstanceId = activeTask.getProcessInstanceId();
+		
+			//Task activeTask = taskService.createTaskQuery().processInstanceId(processInstanceId).list().get(0);
 			TaskFormData tfd = formService.getTaskFormData(activeTask.getId());
 			List<FormField> properties = tfd.getFormFields();
 			
@@ -714,24 +757,6 @@ public class MagazinController {
 				String idText = (String)runtimeService.getVariable(processInstanceId,"textId");
 				Text text = textService.findById(Long.parseLong(idText));
 				
-				List<Task> taskList = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
-				for(Task t : taskList) {
-					System.out.println(" task "+t.getAssignee()+" ii " +t.getId());
-					if(t.getName().equals("Ispravke sadrzaja") || t.getId().equals("Task_13002q8")) {
-						t.setAssignee(text.getAutor().getUsername());
-						taskService.saveTask(t);
-						break;
-					}
-					
-					if(t.getName().equals("Izbor recenzenata") || t.getId().equals("Task_12wppzw")) {
-						t.setAssignee(text.getAutor().getUsername());
-						taskService.saveTask(t);
-						break;
-					}
-					
-					
-				}
-				
 				return new ResponseEntity<>(flagOdobrena,HttpStatus.OK);
 				
 			}catch(FormFieldValidationException e) {
@@ -740,6 +765,38 @@ public class MagazinController {
 			}
 		
 		}
+		
+		@PostMapping(path = "/izvrsiPlacanje/{taskId}", produces = "application/json"	)
+		public @ResponseBody ResponseEntity izvrsiPlacanje(@RequestBody List<FormSubmissionDto> dto, @PathVariable String taskId, HttpServletRequest request) {
+			
+			HashMap<String, Object> map = this.mapListToDto(dto);
+			Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+			String processInstanceId = task.getProcessInstanceId();
+			boolean uplaceno = false;
+			for(int i = 0;i<dto.size();i++) {
+					if(dto.get(i).getFieldId().equals("uplaceno")) {
+						if(dto.get(i).getFieldValue().equals("true")) {
+							uplaceno = true;
+						}
+					}
+				}
+					
+			
+			try {
+
+				runtimeService.setVariable(processInstanceId, "uplaceno", uplaceno);
+
+				formService.submitTaskForm(taskId, map);
+				
+				return new ResponseEntity<>(uplaceno,HttpStatus.OK);
+				
+			}catch(FormFieldValidationException e) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				
+			}
+		
+		}
+		
 		
 		@PostMapping(path = "/updateRad/{taskId}", produces = "application/json"	)
 		public @ResponseBody ResponseEntity updateRad(@RequestBody List<FormSubmissionDto> dto, @PathVariable String taskId, HttpServletRequest request) {

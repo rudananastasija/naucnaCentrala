@@ -35,23 +35,19 @@ public class SistemBiraUrednikaService implements JavaDelegate{
 		Text text = textService.findById(Long.parseLong(textId));
 		
 		Magazin casopis = text.getMagazin();
-		System.out.println("oblast od teksta "+text.getOblast().getName() );
 		
 		Set<User> urednici = casopis.getUrednici();
 		List<User> lista = new ArrayList<User>();
-		System.out.println(" velicina je "+urednici.size());
 		for(User u :urednici) {
 			boolean flag = false;
 				
 				for(NaucnaOblast no :u.getNaucneOblasti()) {
-					System.out.println(" oblast urednika "+no.getName()); 
 					if(no.getName().equals(text.getOblast().getName())) {
 						flag = true;
 						break;
 					}
 					
 				}
-				System.out.println("urednik je "+u.getUsername());
 			if(flag) {
 				lista.add(u);
 			}
@@ -64,6 +60,7 @@ public class SistemBiraUrednikaService implements JavaDelegate{
 			Random rand = new Random(); 
 	        int rand_int1 = rand.nextInt(size); 
 	        User izabraniUrednik = lista.get(rand_int1);
+	        System.out.println("uzabran je urednik "+izabraniUrednik.getUsername());
 	        execution.setVariable("izabraniUrednik", izabraniUrednik.getId().toString());
 	        
 		}

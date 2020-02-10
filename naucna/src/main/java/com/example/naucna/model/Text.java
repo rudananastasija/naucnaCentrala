@@ -29,6 +29,9 @@ public class Text {
 	@Column
 	private String fajl;
 	
+	@Column
+	private boolean uplaceno;
+	
 	@OneToMany(mappedBy = "text", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<KljucnaRijec> kljucneRijeci= new HashSet<KljucnaRijec>();
@@ -128,6 +131,12 @@ public class Text {
 	}
 	public void setRecenzenti(Set<User> recenzenti) {
 		this.recenzenti = recenzenti;
+	}
+	public boolean isUplaceno() {
+		return uplaceno;
+	}
+	public void setUplaceno(boolean uplaceno) {
+		this.uplaceno = uplaceno;
 	}
 	
 	

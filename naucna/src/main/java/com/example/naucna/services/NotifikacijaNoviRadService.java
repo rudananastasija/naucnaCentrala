@@ -29,12 +29,15 @@ public class NotifikacijaNoviRadService implements JavaDelegate{
 			//urednici tog casopisa za oblast koja je u radu
 			Text text = textService.findById(Long.parseLong(textId));
 			System.out.println("Slanje mejla glavnom uredniku");
+			execution.setVariable("odabraniUrednik", text.getMagazin().getGlavniUrednik().getUsername());
+	        
 			emailService.sendNoviRadUrednik(text.getMagazin().getGlavniUrednik(),execution.getProcessInstanceId());
 			
 		}else {
 			User urednik = service.findById(Long.parseLong(urednikId));
 			System.out.println("Slanje mejla  uredniku");
-			
+			execution.setVariable("odabraniUrednik", urednik.getUsername());
+	        
 			emailService.sendNoviRadUrednik(urednik,execution.getProcessInstanceId());
 
 		}
